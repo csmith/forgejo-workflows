@@ -1,0 +1,37 @@
+name: Test Go project
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: false
+        type: string
+        default: './...'
+      tags:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  test:
+    runs-on: docker 
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Go
+        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+        with:
+          go-version: stable
+
+      - name: Test
+        run: go test -tags "${INPUTS_TAGS}" ${INPUTS_PACKAGE}
+        env:
+          INPUTS_TAGS: ${{inputs.tags}}
+          INPUTS_PACKAGE: ${{inputs.package}}

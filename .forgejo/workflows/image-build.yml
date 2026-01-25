@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         run: |
           mkdir -p "$FORGEJO_WORKSPACE" &&
-          cd "$FORGEJO_WORKSAPCE" &&
+          cd "$FORGEJO_WORKSPACE" &&
           export token=$(echo "${FORGEJO_REPOSITORY_OWNER}:${FORGEJO_TOKEN}" | base64) &&
           git -c http.extraHeader="Authorization: Basic $TOKEN" clone "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}" . &&
           git checkout "${FORGEJO_REF_NAME}"

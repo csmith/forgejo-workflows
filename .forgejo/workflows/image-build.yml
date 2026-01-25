@@ -25,7 +25,15 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-          fetch-tags: true
+
+      - name: Generate tags
+        id: tags
+        uses: https://github.com/greboid/docker-tags-action@00db79382b548d014b51a24c555c4cee15b50167 # v6.0.5
+        with:
+          separator: ' '
+          fullname: true 
+          registries: forgejo.local:3000
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to registry
         uses: docker/login-action@v3
@@ -43,4 +51,4 @@ jobs:
           push: true
           pull: true
           file: ${{ inputs.dockerfile }}
-          tags: "forgejo.local:3000/${{ inputs.image }}:latest"
+          tags: ${{ steps.tags.outputs.tags }}

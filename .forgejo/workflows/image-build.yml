@@ -19,6 +19,8 @@ on:
 jobs:
   docker:
     runs-on: docker 
+    container:
+      image: quay.io/buildah/stable:latest
     steps:
 
       - name: Checkout
@@ -26,19 +28,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Generate tags
-        id: tags
-        uses: https://github.com/greboid/docker-tags-action@00db79382b548d014b51a24c555c4cee15b50167 # v6.0.5
-        with:
-          separator: ' '
-          fullname: 'false'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build image
         id: build-image
         uses: https://github.com/redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
-        container:
-          image: quay.io/buildah/stable:latest
         with:
           dockerfiles: ${{ inputs.dockerfile }}
           image: ${{ inputs.image }}
@@ -49,12 +41,10 @@ jobs:
 
       - name: Push to registry
         uses: https://github.com/redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
-        container:
-          image: quay.io/buildah/stable:latest
         with:
           image: ${{ steps.build-image.outputs.image }}
           registry: forgejo.local 
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          tags: ${{ steps.tags.outputs.tags }}
+          tags: latest # ${{ steps.tags.outputs.tags }}
 

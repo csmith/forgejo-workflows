@@ -23,7 +23,12 @@ jobs:
       image: quay.io/buildah/stable
     steps:
       - name: Checkout
-        run: env 
+        run: |
+          mkdir -p "$FORGEJO_WORKSPACE" &&
+          cd "$FORGEJO_WORKSAPCE" &&
+          export token=$(echo "${FORGEJO_REPOSITORY_OWNER}:${FORGEJO_TOKEN}" | base64) &&
+          git -c http.extraHeader="Authorization: Basic $TOKEN" clone "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}" . &&
+          git checkout "${FORGEJO_REF_NAME}"
 
       - name: Build image
         id: build-image

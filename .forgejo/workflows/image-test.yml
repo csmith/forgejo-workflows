@@ -24,6 +24,6 @@ jobs:
           cd "$FORGEJO_WORKSPACE";
           export TOKEN=$(echo -n "x-access-token:${FORGEJO_TOKEN}" | base64);
           git -c "http.extraHeader=Authorization: basic $TOKEN" clone "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
-          git checkout "${FORGEJO_REF_NAME}";
+          git checkout "${FORGEJO_SHA}";
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false

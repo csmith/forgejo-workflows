@@ -32,5 +32,5 @@ jobs:
           git checkout "${FORGEJO_REF_NAME}";
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah login --tls-verify=false forgejo.local:3000 -u chris -p "${{ secrets.PACKAGE_REGISTRY_TOKEN }}";
-          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false -t "forgejo.local:3000/${{ inputs.image }}:latest";
+          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false --label org.opencontainers.image.source="https://git.yak-wall.ts.net/$FORGEJO_REPOSITORY" -t "forgejo.local:3000/${{ inputs.image }}:latest";
           buildah push --tls-verify=false "forgejo.local:3000/${{ inputs.image }}:latest"

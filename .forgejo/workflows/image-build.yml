@@ -30,6 +30,6 @@ jobs:
           export TOKEN=$(echo -n "x-access-token:${FORGEJO_TOKEN}" | base64);
           git -c "http.extraHeader=Authorization: basic $TOKEN" clone "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
           git checkout "${FORGEJO_REF_NAME}";
-          buildah login forgejo.local:3000 -u "${FORGEJO_REPOSITORY_OWNER}" -p "${FORGEJO_TOKEN}";
+          buildah login --tls-verify=false forgejo.local:3000 -u "${FORGEJO_REPOSITORY_OWNER}" -p "${FORGEJO_TOKEN}";
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false -t "forgejo.local:3000/${{ inputs.image }}:latest";
-          buildah push "forgejo.local:3000/${{ inputs.image }}:latest"
+          buildah push --tls-verify=false "forgejo.local:3000/${{ inputs.image }}:latest"

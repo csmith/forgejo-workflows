@@ -28,7 +28,7 @@ jobs:
           mkdir -p "$FORGEJO_WORKSPACE";
           cd "$FORGEJO_WORKSPACE";
           export TOKEN=$(echo "x-access-token:${FORGEJO_TOKEN}" | base64);
-          GIT_CURL_VERBOSE=1 git -c "http.extraHeader=Authorization: Basic $TOKEN" clone -v "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
+          GIT_CURL_VERBOSE=1 git -c "http.extraHeader=Authorization: basic $TOKEN" clone -v "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
           git checkout "${FORGEJO_REF_NAME}";
 
       - name: Build image

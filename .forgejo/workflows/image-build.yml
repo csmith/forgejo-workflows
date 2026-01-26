@@ -33,4 +33,4 @@ jobs:
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah login --tls-verify=false forgejo.local:3000 -u "${FORGEJO_REPOSITORY_OWNER}" -p "${FORGEJO_TOKEN}";
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false -t "forgejo.local:3000/${{ inputs.image }}:latest";
-          buildah push --tls-verify=false "forgejo.local:3000/${{ inputs.image }}:latest"
+          buildah push --creds="${FORGEJO_REPOSITORY_OWNER}:${FORGEJO_TOKEN}" --tls-verify=false "forgejo.local:3000/${{ inputs.image }}:latest"

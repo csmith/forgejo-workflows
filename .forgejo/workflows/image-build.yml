@@ -22,32 +22,14 @@ jobs:
     container:
       image: quay.io/buildah/stable
     steps:
-      - name: Checkout
+      - name: Do everything 
         run: |
           set -eux;
           mkdir -p "$FORGEJO_WORKSPACE";
           cd "$FORGEJO_WORKSPACE";
           export TOKEN=$(echo -n "x-access-token:${FORGEJO_TOKEN}" | base64);
-          GIT_CURL_VERBOSE=1 git -c "http.extraHeader=Authorization: basic $TOKEN" clone -v "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
+          git -c "http.extraHeader=Authorization: basic $TOKEN" clone "${FORGEJO_SERVER_URL}/${FORGEJO_REPOSITORY}.git" .;
           git checkout "${FORGEJO_REF_NAME}";
-
-      - name: Build image
-        id: build-image
-        uses: https://github.com/redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
-        with:
-          dockerfiles: ${{ inputs.dockerfile }}
-          image: ${{ inputs.image }}
-          tags: ${{ steps.tags.outputs.tags }}
-          extra-args: >
-            --timestamp
-            0
-
-      - name: Push to registry
-        uses: https://github.com/redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          registry: forgejo.local 
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tags: latest # ${{ steps.tags.outputs.tags }}
-
+          buildah login forgejo.local:3000 -u "${FORGEJO_REPOISTORY_OWNER}" -p "${FORGEJO_TOKEN}";
+          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false -t "forgejo.local:3000/${{ inputs.image }}:latest";
+          buildah push "forgejo.local:3000/${{ inputs.image }}:latest"

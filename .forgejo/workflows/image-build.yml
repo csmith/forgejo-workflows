@@ -23,7 +23,7 @@ jobs:
       image: quay.io/buildah/stable
     steps:
       - name: Checkout
-        uses: http://forgejo.local:3000/public/actions/checkout@main
+        uses: http://forgejo.local:3000/public/actions/checkout@master
 
       - name: Do everything 
         run: |

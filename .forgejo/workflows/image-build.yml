@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: http://forgejo.local:3000/public/actions/checkout@master
 
+      - name: Get tags
+        uses: http://forgejo.local:3000/public/actions/imagetags@master
+
       - name: Do everything 
         run: |
           set -eux;

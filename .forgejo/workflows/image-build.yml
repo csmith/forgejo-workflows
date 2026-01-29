@@ -25,21 +25,21 @@ jobs:
     runs-on: docker 
     steps:
       - name: Checkout
-        uses: https://git.yak-wall.ts.net/public/actions/checkout@dev
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
       - name: Get tags
         id: tags
-        uses: https://git.yak-wall.ts.net/public/actions/imagetags@dev
+        uses: https://git.yak-wall.ts.net/public/actions/imagetags@master
 
       - name: Login to forgejo
-        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@dev
+        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@master
         with:
           registry: git.yak-wall.ts.net
           username: chris
           password: ${{ secrets.PACKAGE_REGISTRY_TOKEN }}
 
       - name: Login to GitHub
-        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@dev
+        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@master
         if: ${{ inputs.github }}
         with:
           registry: ghcr.io
@@ -47,16 +47,16 @@ jobs:
           password: ${{ secrets.GH_REGISTRY_TOKEN }}
 
       - name: Build container
-        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@dev
+        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@master
 
       - name: Push to forgejo 
-        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@dev
+        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@master
         with:
           name: git.yak-wall.ts.net/${{ inputs.image }}
           tags: ${{ steps.tags.outputs.tags }}
 
       - name: Push to GitHub
-        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@dev
+        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@master
         if: ${{ inputs.github }}
         with:
           name: ghcr.io/${{ inputs.github }}

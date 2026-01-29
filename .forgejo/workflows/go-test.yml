@@ -20,7 +20,7 @@ jobs:
     runs-on: docker 
     steps:
       - name: Checkout
-        uses: http://forgejo.local:3000/public/actions/checkout@master
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
       - name: Install Go
         uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
@@ -28,7 +28,9 @@ jobs:
           go-version: stable
 
       - name: Test
-        run: go test -tags "${INPUTS_TAGS}" ${INPUTS_PACKAGE}
+        run: |
+          cd src;
+          go test -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
         env:
           INPUTS_TAGS: ${{inputs.tags}}
           INPUTS_PACKAGE: ${{inputs.package}}

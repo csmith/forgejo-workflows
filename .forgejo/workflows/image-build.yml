@@ -23,15 +23,16 @@ jobs:
       image: quay.io/buildah/stable
     steps:
       - name: Checkout
-        uses: http://forgejo.local:3000/public/actions/checkout@master
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
       - name: Get tags
-        uses: http://forgejo.local:3000/public/actions/imagetags@master
+        uses: https://git.yak-wall.ts.net/public/actions/imagetags@master
 
       - name: Do everything 
         run: |
           set -eux;
+          cd src;
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
-          buildah login --tls-verify=false forgejo.local:3000 -u chris -p "${{ secrets.PACKAGE_REGISTRY_TOKEN }}";
-          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false --label org.opencontainers.image.source="https://git.yak-wall.ts.net/$FORGEJO_REPOSITORY" -t "forgejo.local:3000/${{ inputs.image }}:latest";
-          buildah push --tls-verify=false "forgejo.local:3000/${{ inputs.image }}:latest"
+          buildah login git.yak-wall.ts.net -u chris -p "${{ secrets.PACKAGE_REGISTRY_TOKEN }}";
+          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false --label org.opencontainers.image.source="https://git.yak-wall.ts.net/$FORGEJO_REPOSITORY" -t "git.yak-wall.ts.net/${{ inputs.image }}:latest";
+          buildah push "git.yak-wall.ts.net/${{ inputs.image }}:latest"

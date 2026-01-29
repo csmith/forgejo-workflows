@@ -16,7 +16,7 @@ jobs:
     runs-on: docker 
     steps:
       - name: Checkout
-        uses: http://forgejo.local:3000/public/actions/checkout@master
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
       - name: Install Go
         uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
@@ -25,6 +25,7 @@ jobs:
 
       - name: Check for vulnerabilities
         run: |
+          cd src;
           go run golang.org/x/vuln/cmd/govulncheck@latest -- "${INPUTS_PACKAGE}"
         env:
           INPUTS_PACKAGE: ${{inputs.package}}

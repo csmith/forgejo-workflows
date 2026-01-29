@@ -18,10 +18,11 @@ jobs:
       image: quay.io/buildah/stable
     steps:
       - name: Checkout
-        uses: http://forgejo.local:3000/public/actions/checkout@master
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
       - name: Do everything 
         run: |
           set -eux;
+          cd src;
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false

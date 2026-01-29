@@ -15,6 +15,10 @@ on:
         required: false
         type: string
         default: ${{ github.repository }}
+      github:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   docker:
@@ -34,11 +38,26 @@ jobs:
           username: chris
           password: ${{ secrets.PACKAGE_REGISTRY_TOKEN }}
 
+      - name: Login to GitHub
+        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@dev
+        if: ${{ inputs.github }}
+        with:
+          registry: ghcr.io
+          username: csmith
+          password: ${{ secrets.GH_REGISTRY_TOKEN }}
+
       - name: Build container
         uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@dev
 
-      - name: Push images
+      - name: Push to forgejo 
         uses: https://git.yak-wall.ts.net/public/actions/dockerpush@dev
         with:
           name: git.yak-wall.ts.net/${{ inputs.image }}
+          tags: ${{ steps.tags.outputs.tags }}
+
+      - name: Push to GitHub
+        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@dev
+        if: ${{ inputs.github }}
+        with:
+          name: ghcr.io/${{ inputs.github }}
           tags: ${{ steps.tags.outputs.tags }}

@@ -14,15 +14,9 @@ on:
 jobs:
   docker:
     runs-on: docker 
-    container:
-      image: quay.io/buildah/stable
     steps:
       - name: Checkout
         uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
-      - name: Do everything
-        run: |
-          set -eux;
-          [ -d src ] && cd src;
-          sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
-          buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false
+      - name: Build
+        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@master

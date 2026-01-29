@@ -28,10 +28,10 @@ jobs:
       - name: Get tags
         uses: https://git.yak-wall.ts.net/public/actions/imagetags@master
 
-      - name: Do everything 
+      - name: Do everything
         run: |
           set -eux;
-          cd src;
+          [ -d src ] && cd src;
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah login git.yak-wall.ts.net -u chris -p "${{ secrets.PACKAGE_REGISTRY_TOKEN }}";
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false --label org.opencontainers.image.source="https://git.yak-wall.ts.net/$FORGEJO_REPOSITORY" -t "git.yak-wall.ts.net/${{ inputs.image }}:latest";

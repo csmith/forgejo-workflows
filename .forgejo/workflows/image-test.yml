@@ -20,9 +20,9 @@ jobs:
       - name: Checkout
         uses: https://git.yak-wall.ts.net/public/actions/checkout@master
 
-      - name: Do everything 
+      - name: Do everything
         run: |
           set -eux;
-          cd src;
+          [ -d src ] && cd src;
           sed -i 's/short-name-mode = "enforcing"/short-name-mode = "disabled"/g' /etc/containers/registries.conf;
           buildah bud -f "${{ inputs.dockerfile }}" --timestamp=0 --identity-label=false

@@ -16,7 +16,7 @@ jobs:
     runs-on: docker 
     steps:
       - name: Checkout
-        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@dev
 
       - name: Build
-        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@master
+        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@dev

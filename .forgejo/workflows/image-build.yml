@@ -21,32 +21,24 @@ jobs:
     runs-on: docker 
     steps:
       - name: Checkout
-        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
-        with:
-          debug: 'true'
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@dev
 
       - name: Get tags
         id: tags
-        uses: https://git.yak-wall.ts.net/public/actions/imagetags@master
-        with:
-          debug: 'true'
+        uses: https://git.yak-wall.ts.net/public/actions/imagetags@dev
 
       - name: Login to forgejo
-        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@master
+        uses: https://git.yak-wall.ts.net/public/actions/dockerlogin@dev
         with:
           registry: git.yak-wall.ts.net
           username: chris
           password: ${{ secrets.PACKAGE_REGISTRY_TOKEN }}
-          debug: 'true'
 
       - name: Build container
-        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@master
-        with:
-          debug: 'true'
+        uses: https://git.yak-wall.ts.net/public/actions/dockerbuild@dev
 
       - name: Push images
-        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@master
+        uses: https://git.yak-wall.ts.net/public/actions/dockerpush@dev
         with:
           name: git.yak-wall.ts.net/${{ inputs.image }}
           tags: ${{ steps.tags.outputs.tags }}
-          debug: 'true'

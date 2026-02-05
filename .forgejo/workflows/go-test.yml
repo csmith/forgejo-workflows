@@ -14,6 +14,10 @@ on:
         required: false
         type: string
         default: ''
+      env_vars:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   test:
@@ -30,7 +34,9 @@ jobs:
       - name: Test
         run: |
           cd src;
+          [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
           go test -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
         env:
           INPUTS_TAGS: ${{inputs.tags}}
           INPUTS_PACKAGE: ${{inputs.package}}
+          INPUTS_ENV_VARS: ${{inputs.env_vars}}

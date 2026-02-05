@@ -10,6 +10,10 @@ on:
         required: false
         type: string
         default: './...'
+      env_vars:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   vulncheck:
@@ -26,6 +30,8 @@ jobs:
       - name: Check for vulnerabilities
         run: |
           cd src;
+          [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
           go run golang.org/x/vuln/cmd/govulncheck@latest -- "${INPUTS_PACKAGE}"
         env:
           INPUTS_PACKAGE: ${{inputs.package}}
+          INPUTS_ENV_VARS: ${{inputs.env_vars}}

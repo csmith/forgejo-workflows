@@ -1,0 +1,29 @@
+name: Create GitHub release
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      changelog:
+        required: false
+        type: string
+        default: "src/CHANGELOG.md"
+      github:
+        required: true
+        type: string
+
+jobs:
+  docker:
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
+
+      - name: Create GitHub release
+        uses: https://git.yak-wall.ts.net/public/actions/githubrelease@master
+        with:
+          repo: ${{ inputs.github }}
+          changelog: ${{ inputs.changelog }}
+          token: ${{ secrets.GH_REGISTRY_TOKEN }}

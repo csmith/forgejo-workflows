@@ -1,0 +1,53 @@
+name: Create WoW addon release
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      changelog:
+        required: false
+        type: string
+        default: "src/CHANGELOG.md"
+      github:
+        required: false
+        type: string
+        default: ""
+      source:
+        required: false
+        type: string
+        default: "."
+      wowinterface-addon-id:
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  release:
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
+
+      - name: Package addon
+        uses: https://git.yak-wall.ts.net/public/actions/wowaddon@master
+        with:
+          source: ${{ inputs.source }}
+
+      - name: Create GitHub release
+        if: ${{ inputs.github }}
+        uses: https://git.yak-wall.ts.net/public/actions/githubrelease@master
+        with:
+          repo: ${{ inputs.github }}
+          changelog: ${{ inputs.changelog }}
+          token: ${{ secrets.GH_REGISTRY_TOKEN }}
+          assets: "*.zip"
+
+      - name: Publish to WowInterface
+        if: ${{ inputs.wowinterface-addon-id }}
+        uses: https://git.yak-wall.ts.net/public/actions/wowinterface@master
+        with:
+          addon-id: ${{ inputs.wowinterface-addon-id }}
+          path: "*.zip"
+          api-key: ${{ secrets.WOWINTERFACE_API_KEY }}

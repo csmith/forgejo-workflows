@@ -17,7 +17,7 @@ on:
       source:
         required: false
         type: string
-        default: "."
+        default: "src"
       wowinterface-addon-id:
         required: false
         type: string

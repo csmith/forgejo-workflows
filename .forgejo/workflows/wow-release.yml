@@ -22,6 +22,10 @@ on:
         required: false
         type: string
         default: ""
+      curseforge-project-id:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   release:
@@ -51,3 +55,11 @@ jobs:
           addon-id: ${{ inputs.wowinterface-addon-id }}
           path: "*.zip"
           api-key: ${{ secrets.WOWINTERFACE_API_KEY }}
+
+      - name: Publish to Curseforge
+        if: ${{ inputs.curseforge-project-id }}
+        uses: https://git.yak-wall.ts.net/public/actions/curseforge@master
+        with:
+          api-token: ${{ secrets.CURSEFORGE_API_KEY }}
+          project-id: ${{ inputs.curseforge-project-id }}
+          path: "*.zip"

@@ -10,6 +10,10 @@ on:
         required: false
         type: string
         default: './...'
+      tags:
+        required: false
+        type: string
+        default: ''
       env_vars:
         required: false
         type: string
@@ -29,7 +33,8 @@ jobs:
         run: |
           cd src;
           [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
-          go build "${INPUTS_PACKAGE}"
+          go build -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
         env:
+          INPUTS_TAGS: ${{inputs.tags}}
           INPUTS_PACKAGE: ${{inputs.package}}
           INPUTS_ENV_VARS: ${{inputs.env_vars}}

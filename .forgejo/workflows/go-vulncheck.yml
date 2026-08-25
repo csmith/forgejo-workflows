@@ -14,6 +14,10 @@ on:
         required: false
         type: string
         default: ''
+      apt_packages:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   vulncheck:
@@ -24,6 +28,14 @@ jobs:
 
       - name: Install Go
         uses: https://git.yak-wall.ts.net/public/actions/setupgo@master 
+
+      - name: Install extra packages
+        if: inputs.apt_packages != ''
+        run: |
+          apt-get update
+          apt-get install -y ${INPUTS_APT_PACKAGES}
+        env:
+          INPUTS_APT_PACKAGES: ${{ inputs.apt_packages }}
 
       - name: Check for vulnerabilities
         run: |

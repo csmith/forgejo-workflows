@@ -22,6 +22,14 @@ on:
         required: false
         type: string
         default: ''
+      # Optional command and arguments to prefix the go test invocation,
+      # e.g. 'xvfb-run -a'. Install any binaries it needs via apt_packages
+      # (e.g. 'xvfb', plus 'xauth' if the wrapper requires it). Treated as a
+      # simple whitespace-separated command and arguments, not shell syntax.
+      command_wrapper:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   test:
@@ -45,8 +53,9 @@ jobs:
         run: |
           cd src;
           [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
-          go test -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
+          ${INPUTS_COMMAND_WRAPPER} go test -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
         env:
           INPUTS_TAGS: ${{inputs.tags}}
           INPUTS_PACKAGE: ${{inputs.package}}
           INPUTS_ENV_VARS: ${{inputs.env_vars}}
+          INPUTS_COMMAND_WRAPPER: ${{inputs.command_wrapper}}

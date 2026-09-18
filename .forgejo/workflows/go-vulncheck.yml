@@ -18,6 +18,11 @@ on:
         required: false
         type: string
         default: ''
+      directory:
+        required: false
+        type: string
+        default: '.'
+        description: Project directory relative to the checked-out repository
 
 jobs:
   vulncheck:
@@ -39,9 +44,10 @@ jobs:
 
       - name: Check for vulnerabilities
         run: |
-          cd src;
+          cd "src/${INPUTS_DIRECTORY}" || exit 1;
           [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
           go run golang.org/x/vuln/cmd/govulncheck@latest -- "${INPUTS_PACKAGE}"
         env:
+          INPUTS_DIRECTORY: ${{ inputs.directory }}
           INPUTS_PACKAGE: ${{inputs.package}}
           INPUTS_ENV_VARS: ${{inputs.env_vars}}

@@ -30,6 +30,11 @@ on:
         required: false
         type: string
         default: ''
+      directory:
+        required: false
+        type: string
+        default: '.'
+        description: Project directory relative to the checked-out repository
 
 jobs:
   test:
@@ -51,10 +56,11 @@ jobs:
 
       - name: Test
         run: |
-          cd src;
+          cd "src/${INPUTS_DIRECTORY}" || exit 1;
           [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
           ${INPUTS_COMMAND_WRAPPER} go test -tags "${INPUTS_TAGS}" "${INPUTS_PACKAGE}"
         env:
+          INPUTS_DIRECTORY: ${{ inputs.directory }}
           INPUTS_TAGS: ${{inputs.tags}}
           INPUTS_PACKAGE: ${{inputs.package}}
           INPUTS_ENV_VARS: ${{inputs.env_vars}}

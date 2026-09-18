@@ -1,0 +1,66 @@
+name: Test JavaScript project
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      directory:
+        required: false
+        type: string
+        default: '.'
+        description: Project directory relative to the checked-out repository
+      env_vars:
+        required: false
+        type: string
+        default: ''
+      apt_packages:
+        required: false
+        type: string
+        default: ''
+      # Optional command and arguments to prefix the bun test invocation,
+      # e.g. 'xvfb-run -a'. Install any binaries it needs via apt_packages
+      # (e.g. 'xvfb', plus 'xauth' if the wrapper requires it). Treated as a
+      # simple whitespace-separated command and arguments, not shell syntax.
+      command_wrapper:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  test:
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: https://git.yak-wall.ts.net/public/actions/checkout@master
+
+      - name: Install Bun
+        uses: https://git.yak-wall.ts.net/public/actions/setupbun@master
+
+      - name: Install extra packages
+        if: inputs.apt_packages != ''
+        run: |
+          apt-get update
+          apt-get install -y ${INPUTS_APT_PACKAGES}
+        env:
+          INPUTS_APT_PACKAGES: ${{ inputs.apt_packages }}
+
+      - name: Install dependencies
+        run: |
+          cd "src/${INPUTS_DIRECTORY}";
+          [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
+          bun install
+        env:
+          INPUTS_DIRECTORY: ${{ inputs.directory }}
+          INPUTS_ENV_VARS: ${{ inputs.env_vars }}
+
+      - name: Test
+        run: |
+          cd "src/${INPUTS_DIRECTORY}";
+          [ -n "${INPUTS_ENV_VARS}" ] && export ${INPUTS_ENV_VARS};
+          ${INPUTS_COMMAND_WRAPPER} bun test
+        env:
+          INPUTS_DIRECTORY: ${{ inputs.directory }}
+          INPUTS_ENV_VARS: ${{ inputs.env_vars }}
+          INPUTS_COMMAND_WRAPPER: ${{ inputs.command_wrapper }}
